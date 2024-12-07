@@ -5,7 +5,7 @@ defmodule Day04 do
 
   # IO
   defp input() do 
-    AdventOfCode.getInput("https://adventofcode.com/2024/day/4/input", "session=53616c7465645f5f34803e22ae54be6575342af046e5b0b08fdc88699267a1f0f2700846ff857646bbe27fd78ce33e73cbd840cf32eba4508ea9dc81510eee5a")
+    AdventOfCode.getInput(4, "session=53616c7465645f5f34803e22ae54be6575342af046e5b0b08fdc88699267a1f0f2700846ff857646bbe27fd78ce33e73cbd840cf32eba4508ea9dc81510eee5a")
     |> parse
   end
 
