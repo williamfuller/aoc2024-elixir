@@ -29,36 +29,36 @@ defmodule Day04 do
 
   # logic
   defp directions() do
-    [{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}]
+    [{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}]
   end
 
   defp find(grid, word) do
     Enum.reduce(grid, 0, fn {position, _}, acc ->
-      case recursive_find(grid, position, word) do
-        true -> acc + 1
-        false -> acc
-      end
+      acc + recursive_find(grid, position, word)
     end)
-  end
-
-  defp recursive_find(grid, position, [_ | []]) do
-    case Map.get(grid, position) do
-      nil -> false
-      _ -> true
-    end
   end
 
   defp recursive_find(grid, {x, y}, [l | rest]) do
     case match?(grid, {x, y}, l) do
       true ->
-        Enum.any?(directions(), fn {x_diff, y_diff} ->
-          position = {x + x_diff, y + y_diff}
-          recursive_find(grid, position, rest)
+        Enum.count(directions(), fn {x_diff, y_diff} ->
+          recursive_find(grid, {x + x_diff, y + y_diff}, rest, {x_diff, y_diff})
         end)
 
       _ ->
-        false
+        0
     end
+  end
+
+  defp recursive_find(grid, {x, y}, [l | rest], {x_diff, y_diff}) do
+    case match?(grid, {x, y}, l) do
+      true -> recursive_find(grid, {x + x_diff, y + y_diff}, rest, {x_diff, y_diff})
+      _ -> false
+    end
+  end
+
+  defp recursive_find(_, _, [], _) do
+    true
   end
 
   defp match?(grid, position, char) do
