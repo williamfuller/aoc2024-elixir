@@ -1,6 +1,18 @@
 defmodule Day04 do
   def part1 do
-    input()
+    grid = input()
+
+    Enum.reduce(grid, 0, fn {position, _}, acc ->
+      acc + recursive_find(grid, position, ~c"XMAS", directions())
+    end)
+  end
+
+  def part2 do
+    grid = input()
+
+    Enum.reduce(grid, 0, fn {position, _}, acc ->
+      acc + recursive_find(grid, position, ~c"MAS", diagonals())
+    end)
   end
 
   # IO
@@ -10,7 +22,6 @@ defmodule Day04 do
       "session=53616c7465645f5ff44d2dc513e2d20748caf8d1fb506ed7f0f9fa745c45639b445549dba9db95841f5faa7576ed3c84c5bd7c3ca1dcf6b5eacb693b0807012e"
     )
     |> parse
-    |> find(~c"XMAS")
   end
 
   defp parse(input) do
@@ -32,17 +43,15 @@ defmodule Day04 do
     [{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}]
   end
 
-  defp find(grid, word) do
-    Enum.reduce(grid, 0, fn {position, _}, acc ->
-      acc + recursive_find(grid, position, word)
-    end)
+  defp diagonals() do
+    [{-1, -1}, {-1, 1}, {1, 1}, {1, -1}]
   end
 
-  defp recursive_find(grid, {x, y}, [l | rest]) do
+  defp recursive_find(grid, {x, y}, [l | rest], search_directions) do
     case match?(grid, {x, y}, l) do
       true ->
-        Enum.count(directions(), fn {x_diff, y_diff} ->
-          recursive_find(grid, {x + x_diff, y + y_diff}, rest, {x_diff, y_diff})
+        Enum.count(search_directions, fn {x_diff, y_diff} ->
+          recursive_find(grid, {x + x_diff, y + y_diff}, rest, {}, {x_diff, y_diff})
         end)
 
       _ ->
@@ -50,14 +59,14 @@ defmodule Day04 do
     end
   end
 
-  defp recursive_find(grid, {x, y}, [l | rest], {x_diff, y_diff}) do
+  defp recursive_find(grid, {x, y}, [l | rest], _, {x_diff, y_diff}) do
     case match?(grid, {x, y}, l) do
-      true -> recursive_find(grid, {x + x_diff, y + y_diff}, rest, {x_diff, y_diff})
+      true -> recursive_find(grid, {x + x_diff, y + y_diff}, rest, {}, {x_diff, y_diff})
       _ -> false
     end
   end
 
-  defp recursive_find(_, _, [], _) do
+  defp recursive_find(_, _, [], _, _) do
     true
   end
 
