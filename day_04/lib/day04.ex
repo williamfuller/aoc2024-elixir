@@ -1,21 +1,25 @@
 defmodule Day04 do
+  @directions [{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}]
+  @diagonals [{-1, -1}, {-1, 1}, {1, 1}, {1, -1}]
+
   def part1 do
     grid = input()
 
     Enum.reduce(grid, 0, fn {position, _}, acc ->
-      acc + recursive_find(grid, position, ~c"XMAS", directions())
+      acc + recursive_find(grid, position, ~c"XMAS", @directions)
     end)
   end
 
   def part2 do
     grid = input()
 
-    Enum.reduce(grid, 0, fn {position, _}, acc ->
-      acc + recursive_find(grid, position, ~c"MAS", diagonals())
-    end)
+     Enum.filter(grid, fn {_, letter} -> letter == ?A end)
+    |> Enum.count(fn {position, _} -> check_around(grid, position) end)
   end
 
+
   # IO
+
   defp input() do
     AOC.get_input(
       4,
@@ -39,13 +43,17 @@ defmodule Day04 do
   end
 
   # logic
-  defp directions() do
-    [{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}]
+
+  defp check_around(grid, {x, y}) do 
+    [tl, tr, br, bl] =
+    @diagonals
+    |> Enum.map(fn {diff_x, diff_y} -> {x + diff_x, y + diff_y} end)
+    |> Enum.map(fn coord -> Map.get(grid, coord) end)
+
+    ([tl, br] == [?M, ?S] || [tl, br] == [?S, ?M]) &&
+    ([tr, bl] == [?M, ?S] || [tr, bl] == [?S, ?M])
   end
 
-  defp diagonals() do
-    [{-1, -1}, {-1, 1}, {1, 1}, {1, -1}]
-  end
 
   defp recursive_find(grid, {x, y}, [l | rest], search_directions) do
     case match?(grid, {x, y}, l) do
