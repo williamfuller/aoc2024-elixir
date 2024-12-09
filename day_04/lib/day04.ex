@@ -19,7 +19,6 @@ defmodule Day04 do
 
 
   # IO
-
   defp input() do
     AOC.get_input(
       4,
