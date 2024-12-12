@@ -13,10 +13,9 @@ defmodule Day04 do
   def part2 do
     grid = input()
 
-     Enum.filter(grid, fn {_, letter} -> letter == ?A end)
+    Enum.filter(grid, fn {_, letter} -> letter == ?A end)
     |> Enum.count(fn {position, _} -> check_around(grid, position) end)
   end
-
 
   # IO
   defp input() do
@@ -43,16 +42,15 @@ defmodule Day04 do
 
   # logic
 
-  defp check_around(grid, {x, y}) do 
+  defp check_around(grid, {x, y}) do
     [tl, tr, br, bl] =
-    @diagonals
-    |> Enum.map(fn {diff_x, diff_y} -> {x + diff_x, y + diff_y} end)
-    |> Enum.map(fn coord -> Map.get(grid, coord) end)
+      @diagonals
+      |> Enum.map(fn {diff_x, diff_y} -> {x + diff_x, y + diff_y} end)
+      |> Enum.map(fn coord -> Map.get(grid, coord) end)
 
     ([tl, br] == [?M, ?S] || [tl, br] == [?S, ?M]) &&
-    ([tr, bl] == [?M, ?S] || [tr, bl] == [?S, ?M])
+      ([tr, bl] == [?M, ?S] || [tr, bl] == [?S, ?M])
   end
-
 
   defp recursive_find(grid, {x, y}, [l | rest], search_directions) do
     case match?(grid, {x, y}, l) do
