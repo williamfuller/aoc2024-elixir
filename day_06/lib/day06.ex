@@ -15,6 +15,28 @@ defmodule Day06 do
     findLoop(guard_index, MapSet.to_list(visited), map)
   end
 
+  # IO
+  defp input() do
+    AOC.get_input(
+      6,
+      "session=53616c7465645f5f34803e22ae54be6575342af046e5b0b08fdc88699267a1f0f2700846ff857646bbe27fd78ce33e73cbd840cf32eba4508ea9dc81510eee5a"
+    )
+    |> parse
+  end
+
+  defp parse(input) do
+    String.split(input, "\n", trim: true)
+    |> Enum.with_index()
+    |> Enum.map(fn {line, y} ->
+      String.split(line, "", trim: true)
+      |> Enum.with_index()
+      |> Enum.map(fn {element, x} -> {element, x, y} end)
+    end)
+    |> List.flatten()
+    |> Map.new(fn {element, x, y} -> {{x, y}, element} end)
+  end
+
+  # logic
   defp findLoop(start_pos, options, map, loop_count \\ 0)
 
   defp findLoop(start_pos, [obstruction_pos | options], map, loop_count) do
@@ -68,26 +90,5 @@ defmodule Day06 do
 
   defp rotate_90({x, y}) do
     {-y, x}
-  end
-
-  # IO
-  defp input() do
-    AOC.get_input(
-      6,
-      "session=53616c7465645f5f34803e22ae54be6575342af046e5b0b08fdc88699267a1f0f2700846ff857646bbe27fd78ce33e73cbd840cf32eba4508ea9dc81510eee5a"
-    )
-    |> parse
-  end
-
-  defp parse(input) do
-    String.split(input, "\n", trim: true)
-    |> Enum.with_index()
-    |> Enum.map(fn {line, y} ->
-      String.split(line, "", trim: true)
-      |> Enum.with_index()
-      |> Enum.map(fn {element, x} -> {element, x, y} end)
-    end)
-    |> List.flatten()
-    |> Map.new(fn {element, x, y} -> {{x, y}, element} end)
   end
 end
